@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  testtln_backend:
+    image: testtln_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - testtln-mysql
+    volumes:
+      - /app/testtln:/app
+
+  testtln-frontend:
+    image: testtln-frontend
+    build:
+      context: ../frontend/
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    links:
+      - testtln_backend
+    volumes:
+      - /app/testtln:/app
+
+  testtln-mysql:
+    image: percona/percona-server:5.7
+    ports:
+      - 3367:3306
+    environment:
+      MYSQL_DATABASE: testtln
+      MYSQL_USER: testtln
+      MYSQL_PASSWORD: 12341234
+      MYSQL_ROOT_PASSWORD: 12341234
+      MYSQL_RANDOM_ROOT_PASSWORD: 12341234
+    volumes:
+      - /app/mysql/testtln-mysql:/var/lib/mysql
